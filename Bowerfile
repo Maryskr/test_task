@@ -1,0 +1,14 @@
+asset 'jquery'
+asset 'jquery-ujs'
+
+asset 'underscore'
+asset 'backbone'
+asset 'moment'
+
+asset 'alertify'
+
+asset 'semantic-ui'
+
+asset 'pikaday'
+
+asset 'jquery-timepicker-jt'
