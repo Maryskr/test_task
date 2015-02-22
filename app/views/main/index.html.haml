@@ -1,0 +1,52 @@
+.ui.column.page.grid.main
+  .ui.column
+    .content
+      .ui.attached.segment
+        %h1.ui.header Title
+        .metadata
+          .date 45 min ago
+      .ui.attached.segment TEXT
+      .ui.attached.segment.CommentsBlock
+        .ui.comments
+          - for i in 0..5
+            .ui.comment
+              %a.avatar
+                %img.ui.tiny.circular.image{src: image_path('noavatar.png') }
+              .content
+                %a.author User name
+                .metadata
+                  .date 45 min ago
+                .mini.ui.icon.button
+                  %i.icon.minus
+                %span.CommentRating + 5 
+                .mini.ui.icon.button
+                  %i.icon.plus
+                .text
+                  the hours, minutes and seconds stand as visible reminders that your effort put them all there
+                .ui.comments
+                  .ui.comment
+                    %a.avatar
+                      %img.ui.tiny.circular.image{src: image_path('noavatar.png') }
+                    .content
+                      %a.author User name
+                      .metadata
+                        .date 45 min ago
+                      .mini.ui.icon.button
+                        %i.icon.minus
+                      %span.CommentRating - 5 
+                      .mini.ui.icon.button
+                        %i.icon.plus
+                      .text
+                        the hours, minutes and seconds stand as visible reminders that your effort put them all there.
+      .ui.attached.segment
+        %form.ui.form
+          .inline.field
+            %label Name
+            %input{name: 'user_name', placeholder: 'Name'}
+          .inline.field
+            %label Email
+            %input{name: 'user_email', placeholder: 'Email'}
+          .inline.field
+            %label Your comment
+            %textarea
+          .ui.submit.button Submit
