@@ -2,10 +2,10 @@
   .ui.column
     .content
       .ui.attached.segment
-        %h1.ui.header Title
+        %h1.ui.header=@article.title
         .metadata
           .date 45 min ago
-      .ui.attached.segment TEXT
+      .ui.attached.segment=@article.content
       .ui.attached.segment.CommentsBlock
         .ui.comments
           - for i in 0..5

@@ -1,4 +1,6 @@
 class MainController < ApplicationController
 
-  def index; end
+  def index
+    @article = Article.first
+  end
 end
