@@ -1,4 +1,4 @@
-.ui.column.page.grid.main
+.ui.column.page.grid.main#TestTaskView
   .ui.column
     .content
       .ui.attached.segment
@@ -8,21 +8,23 @@
       .ui.attached.segment=@article.content
       .ui.attached.segment.CommentsBlock
         .ui.comments
-          - for i in 0..5
+          - @comments.each do |comment|
             .ui.comment
               %a.avatar
-                %img.ui.tiny.circular.image{src: image_path('noavatar.png') }
+                %img.ui.tiny.circular.image{src: image_path(comment.user_avatar) }
               .content
-                %a.author User name
+                %a.author=comment.user_name
                 .metadata
                   .date 45 min ago
                 .mini.ui.icon.button
                   %i.icon.minus
-                %span.CommentRating + 5 
+                %span.CommentRating=comment.rating 
                 .mini.ui.icon.button
                   %i.icon.plus
                 .text
-                  the hours, minutes and seconds stand as visible reminders that your effort put them all there
+                  =comment.content
+                .actions
+                  %a.reply Reply
                 .ui.comments
                   .ui.comment
                     %a.avatar
@@ -38,6 +40,8 @@
                         %i.icon.plus
                       .text
                         the hours, minutes and seconds stand as visible reminders that your effort put them all there.
+                      .actions
+                        %a.reply Reply
       .ui.attached.segment
         %form.ui.form
           .inline.field

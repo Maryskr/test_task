@@ -1,0 +1,2 @@
+OnPageLoad ->
+  Route.startCurrent()
