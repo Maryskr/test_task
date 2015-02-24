@@ -16,8 +16,10 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'haml'
 gem 'less-rails'
-gem 'haml_coffee_assets', group: :assets
+gem 'haml_coffee_assets', git: 'https://github.com/netzpirat/haml_coffee_assets.git'
 gem 'therubyracer'
+
+gem 'gon'
 
 group :development, :test do
   gem 'byebug'

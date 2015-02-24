@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150222120047) do
+ActiveRecord::Schema.define(version: 20150224175904) do
 
   create_table "articles", force: :cascade do |t|
     t.string "title"
@@ -23,7 +23,13 @@ ActiveRecord::Schema.define(version: 20150222120047) do
     t.string  "user_name"
     t.text    "content"
     t.integer "rating",      default: 0
-    t.integer "articles_id"
+    t.integer "article_id"
+  end
+
+  create_table "subcomments", force: :cascade do |t|
+    t.integer "deeps"
+    t.integer "parent_id"
+    t.integer "child_id"
   end
 
 end

@@ -9,39 +9,39 @@
       .ui.attached.segment.CommentsBlock
         .ui.comments
           - @comments.each do |comment|
-            .ui.comment
+            .ui.comment.CommetItem
               %a.avatar
                 %img.ui.tiny.circular.image{src: image_path(comment.user_avatar) }
               .content
                 %a.author=comment.user_name
                 .metadata
                   .date 45 min ago
-                .mini.ui.icon.button
+                .mini.ui.icon.button.RatingButtonMinus
                   %i.icon.minus
                 %span.CommentRating=comment.rating 
-                .mini.ui.icon.button
+                .mini.ui.icon.button.RatingButtonPlus
                   %i.icon.plus
                 .text
                   =comment.content
                 .actions
                   %a.reply Reply
-                .ui.comments
-                  .ui.comment
-                    %a.avatar
-                      %img.ui.tiny.circular.image{src: image_path('noavatar.png') }
-                    .content
-                      %a.author User name
-                      .metadata
-                        .date 45 min ago
-                      .mini.ui.icon.button
-                        %i.icon.minus
-                      %span.CommentRating - 5 
-                      .mini.ui.icon.button
-                        %i.icon.plus
-                      .text
-                        the hours, minutes and seconds stand as visible reminders that your effort put them all there.
-                      .actions
-                        %a.reply Reply
+                / .ui.comments
+                /   .ui.comment
+                /     %a.avatar
+                /       %img.ui.tiny.circular.image{src: image_path('noavatar.png') }
+                /     .content
+                /       %a.author User name
+                /       .metadata
+                /         .date 45 min ago
+                /       .mini.ui.icon.button
+                /         %i.icon.minus
+                /       %span.CommentRating - 5 
+                /       .mini.ui.icon.button
+                /         %i.icon.plus
+                /       .text
+                /         the hours, minutes and seconds stand as visible reminders that your effort put them all there.
+                /       .actions
+                /         %a.reply Reply
       .ui.attached.segment
         %form.ui.form
           .inline.field

@@ -1,3 +1,12 @@
+GIT
+  remote: https://github.com/netzpirat/haml_coffee_assets.git
+  revision: a3c2951eca005d4fcce4837b9a97a139fc022c66
+  specs:
+    haml_coffee_assets (1.16.0)
+      coffee-script (~> 2.0)
+      sprockets (~> 2.0)
+      tilt (~> 1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -60,12 +69,13 @@ GEM
     execjs (2.3.0)
     globalid (0.3.3)
       activesupport (>= 4.1.0)
+    gon (5.2.3)
+      actionpack (>= 2.3.0)
+      json
+      multi_json
+      request_store (>= 1.0.5)
     haml (4.0.6)
       tilt
-    haml_coffee_assets (1.16.0)
-      coffee-script (~> 2.0)
-      sprockets (~> 2.0)
-      tilt (~> 1.1)
     hike (1.2.3)
     i18n (0.7.0)
     jbuilder (2.2.7)
@@ -123,6 +133,7 @@ GEM
     rdoc (4.2.0)
       json (~> 1.4)
     ref (1.0.5)
+    request_store (1.1.0)
     sass (3.4.12)
     sass-rails (5.0.1)
       railties (>= 4.0.0, < 5.0)
@@ -171,8 +182,9 @@ DEPENDENCIES
   bower-rails (~> 0.9.1)
   byebug
   coffee-rails (~> 4.1.0)
+  gon
   haml
-  haml_coffee_assets
+  haml_coffee_assets!
   jbuilder (~> 2.0)
   jquery-rails
   less-rails
