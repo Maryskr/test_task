@@ -48,13 +48,13 @@
                               %a.reply.ReplyCommentButton Reply
       .ui.attached.segment
         %form.ui.form.AjaxForm.Validation{action: comment_path, method: 'POST'}
-          .inline.field{'data-field' => 'user_name'}
+          .three.wide.field{'data-field' => 'user_name'}
             %label Name
             %input{name: 'comment[user_name]', placeholder: 'Name'}
-          .inline.field{'data-field' => 'user_email'}
+          .three.wide.field{'data-field' => 'user_email'}
             %label Email
             %input{name: 'comment[user_email]', placeholder: 'Email'}
-          .inline.field{'data-field' => 'content'}
+          .field{'data-field' => 'content'}
             %label Your comment
             %textarea{name: 'comment[content]'}
           %button.ui.submit.button{type: 'submit'} Submit
