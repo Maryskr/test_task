@@ -47,14 +47,14 @@
                             .actions
                               %a.reply.ReplyCommentButton Reply
       .ui.attached.segment
-        %form.ui.form
-          .inline.field
+        %form.ui.form.AjaxForm.Validation{action: comment_path, method: 'POST'}
+          .inline.field{'data-field' => 'user_name'}
             %label Name
-            %input{name: 'user_name', placeholder: 'Name'}
-          .inline.field
+            %input{name: 'comment[user_name]', placeholder: 'Name'}
+          .inline.field{'data-field' => 'user_email'}
             %label Email
-            %input{name: 'user_email', placeholder: 'Email'}
-          .inline.field
+            %input{name: 'comment[user_email]', placeholder: 'Email'}
+          .inline.field{'data-field' => 'content'}
             %label Your comment
-            %textarea
-          .ui.submit.button Submit
+            %textarea{name: 'comment[content]'}
+          %button.ui.submit.button{type: 'submit'} Submit

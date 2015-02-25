@@ -1,5 +1,5 @@
 class Comment < ActiveRecord::Base
-  validates_presence_of :user_name, :content
+  validates_presence_of :user_name, :user_email, :content
 
   has_many :as_parent, :class_name => 'Subcomment', :foreign_key => 'comment_id'
   has_many :children, through: :as_parent, :source => 'child'
