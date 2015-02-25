@@ -57,4 +57,5 @@
           .field{'data-field' => 'content'}
             %label Your comment
             %textarea{name: 'comment[content]'}
+            %input{type:'hidden', name: 'comment[article_id]', value: @article.id}
           %button.ui.submit.button{type: 'submit'} Submit

@@ -18,7 +18,8 @@ private
      params.require(:comment).permit(
       :user_name, 
       :user_email, 
-      :content
+      :content,
+      :article_id
     )
   end
 end
