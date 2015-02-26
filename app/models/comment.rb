@@ -8,4 +8,13 @@ class Comment < ActiveRecord::Base
   has_one :parent, :through => :as_children, :source => 'comment'
 
   belongs_to :article
+
+  def deeps
+    child = Subcomment.where(child_id: self.id).first
+    if child
+      deeps = child.deeps
+    else
+      deeps = 0
+    end
+  end
 end

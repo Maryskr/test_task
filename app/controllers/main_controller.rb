@@ -5,7 +5,7 @@ class MainController < ApplicationController
       format.html do
         @article = Article.first
         @comments = @article.comments
-        gon.current_resource = @comments.as_json
+        gon.current_resource = @comments.as_json(methods: :deeps)
       end
     end
   end

@@ -12,8 +12,8 @@ clear_errors = ($form) ->
   $form.find('.ValidationError').remove()
   $form.find('[data-field]').removeClass('error')
 
-OnPageLoad ->
-  $("form.AjaxForm").on 'submit', (event) ->
+@InitAjaxForm = ($el, selector) ->
+  callback = (event) ->
     event.preventDefault()
     form = event.currentTarget
     $form = $(form)
@@ -43,3 +43,11 @@ OnPageLoad ->
         $form.trigger 'ajax_form:error', [data, status, message, event, form, $form]
       complete: (data, status) ->
         $form.trigger 'ajax_form:complete', [data, status, event, form, $form]
+
+  if selector
+    $el.on 'submit', selector, callback
+  else
+    $el.on 'submit', callback
+
+OnPageLoad ->
+  InitAjaxForm $("form.AjaxForm")

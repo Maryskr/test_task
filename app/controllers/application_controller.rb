@@ -6,12 +6,12 @@ class ApplicationController < ActionController::Base
   end
 
   def create(&block)
-    new_resource = resource_class.new resource_params
-    if new_resource.save
+    @new_resource = resource_class.new resource_params
+    if @new_resource.save
       block &&  instance_exec(new_resource, &block)
-      json_response 201, new_resource
+      json_response 201, @new_resource
     else
-      json_response 400, errors: new_resource.errors
+      json_response 400, errors: @new_resource.errors
     end
   end
 
