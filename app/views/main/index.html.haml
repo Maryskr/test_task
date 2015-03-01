@@ -12,41 +12,15 @@
           - @comments.each do |comment|
             -if comment.parent.nil?
               .ui.comment
-                %a.avatar
-                  %img.ui.tiny.circular.image{src: image_path(comment.user_avatar) }
-                .content
-                  .CommentItem
-                    %a.author=comment.user_name
-                    .metadata
-                      .date.CommentDateDuration 45 min ago
-                    .mini.ui.icon.button.RatingButtonMinus
-                      %i.icon.minus
-                    %span.CommentRating=comment.rating 
-                    .mini.ui.icon.button.RatingButtonPlus
-                      %i.icon.plus
-                    .text
-                      =comment.content
-                    .actions
-                      %a.reply.ReplyCommentButton Reply
-                  - comment.children.each do |subcomment|
-                    .ui.comments
-                      .ui.comment
-                        %a.avatar
-                          %img.ui.tiny.circular.image{src: image_path(subcomment.user_avatar) }
-                        .content
-                          .CommentItem
-                            %a.author=subcomment.user_name
-                            .metadata
-                              .date 45 min ago
-                            .mini.ui.icon.button.RatingButtonMinus
-                              %i.icon.minus
-                            %span.CommentRating=subcomment.rating 
-                            .mini.ui.icon.button.RatingButtonPlus
-                              %i.icon.plus
-                            .text
-                              =subcomment.content
-                            .actions
-                              %a.reply.ReplyCommentButton Reply
+                = render 'comment_view', comment: comment, deeps: 0
+                .ui.comments
+                  .ui.comment
+                    - comment.children.each do |comment|
+                      = render 'comment_view', comment: comment, deeps: 1
+                      .ui.comments
+                        .ui.comment
+                          - comment.children.each do |comment|
+                            = render 'comment_view', comment: comment, deeps: 2
       .ui.attached.segment
         %form.ui.form.AjaxForm.Validation{action: comment_path, method: 'POST'}
           .three.wide.field{'data-field' => 'user_name'}
