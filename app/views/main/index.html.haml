@@ -11,24 +11,11 @@
         .ui.comments.MainContentBlock
           - @comments.each do |comment|
             -if comment.parent.nil?
-              .ui.comment
+              .ui.comment.ParentCommentBlock
                 = render 'comment_view', comment: comment, deeps: 0
-                .ui.comments
-                  - comment.children.each do |comment|
-                    = render 'comment_view', comment: comment, deeps: 1
-                    .ui.comments
-                      - comment.children.each do |comment|
-                        = render 'comment_view', comment: comment, deeps: 2
-      .ui.attached.segment
-        / %form.ui.form.AjaxForm.Validation{action: comment_index_path, method: 'POST'}
-        /   .three.wide.field{'data-field' => 'user_name'}
-        /     %label Name
-        /     %input{name: 'comment[user_name]', placeholder: 'Name'}
-        /   .three.wide.field{'data-field' => 'user_email'}
-        /     %label Email
-        /     %input{name: 'comment[user_email]', placeholder: 'Email'}
-        /   .field{'data-field' => 'content'}
-        /     %label Your comment
-        /     %textarea{name: 'comment[content]'}
-        /     %input{type:'hidden', name: 'comment[article_id]', value: @article.id}
-        /   %button.ui.submit.button{type: 'submit'} Submit
+                .ui.comments.ChildCommentBlock
+                  - comment.children.each do |subcomment|
+                    = render 'comment_view', comment: subcomment, deeps: 1
+                    .ui.comments.ChildCommentBlock
+                      - subcomment.children.each do |subsubcomment|
+                        = render 'comment_view', comment: subsubcomment, deeps: 2

@@ -11,6 +11,7 @@ class ItemView extends Backbone.View
     'click .RatingButtonPlus' : 'incrementRating'
     'click .RatingButtonMinus' : 'decrementRating'
     'click .ReplyCommentButton' : 'showReplyForm'
+    'click .ShowComment': 'showComment'
 
   elements:
     ratingInput: '.CommentRating'
@@ -42,17 +43,18 @@ class ItemView extends Backbone.View
     @dateDuration.text(result)
 
   incrementRating: ->
-    newRating = @comment.get('rating')+1
+    console.log @comment
+    newRating = parseInt(@comment.get('rating'))+1
     @ratingInput.text(newRating)
-    @comment.set('rating', newRating)
+    @comment.set('rating', parseInt(newRating))
     @plusButton.addClass('disabled')
     @minusButton.addClass('disabled')
     @updateRating()
 
   decrementRating: ->
-    newRating = @comment.get('rating')-1
+    newRating = parseInt(@comment.get('rating'))-1
     @ratingInput.text(newRating)
-    @comment.set('rating', newRating)
+    @comment.set('rating', parseInt(newRating))
     @plusButton.addClass('disabled')
     @minusButton.addClass('disabled')
     @updateRating()
@@ -64,7 +66,7 @@ class ItemView extends Backbone.View
       dataType: 'json'
       data:
         comment:
-          rating: @comment.get('rating')
+          rating: parseInt(@comment.get('rating'))
       success: (data) =>
         alertify.success 'Thanks!'
       error: (errors) =>
@@ -78,6 +80,15 @@ class ItemView extends Backbone.View
   showReplyForm: ->
     @$el.append @formView.render(@getFormData())
 
+  hideComments: ->
+    @mainBlock = @$el.offsetParent.offsetParent
+    @mainBlock.find('.ChildCommentBlock').toggle()
+    @mainBlock.find('.CommentActions').toggle()
+
+  showComment: (e) ->
+    @$el.find('.comment').toggle()
+    @$(e.currentTarget).hide()
+
 class FormView extends Backbone.View
 
   initialize: (@collection) ->
@@ -85,8 +96,8 @@ class FormView extends Backbone.View
     @setElement $("<div>")
 
     InitAjaxForm @$el, 'form.AjaxForm'
-    @$el.on 'ajax_form:submit', 'form.AjaxForm', (e) =>
-     @$el.on 'ajax_form:complete', @onSuccess
+    # @$el.on 'ajax_form:submit', 'form.AjaxForm', (e) =>
+    @$el.on 'ajax_form:success', @onSuccess
 
   onSuccess:(e) =>
     alertify.success 'Comment added!'
@@ -124,7 +135,9 @@ class MainView extends Backbone.View
 
   elements:
     articleId: '.ArticleIdInput'
-    form: '.CreateComment'
+
+  events:
+    'click .CommentActions': 'hideComments'
 
   initialize:(collection, article) ->
 
@@ -141,7 +154,7 @@ class MainView extends Backbone.View
     @formView = new FormView(@commentsCollection)
 
     _(@commentsCollection.models).each (item, index) =>
-      el = @$el.find('.CommentItem')[index]  
+      el = @$el.find('.CommentItem[data-id='+item.get("id")+']')  
       new ItemView(item, el, @formView)
     
     @setArticleTimeDuration(article.created_at)
@@ -161,6 +174,12 @@ class MainView extends Backbone.View
         when duration.minutes() > 0 then duration.minutes() + ' min ago'
         when duration.minutes() == 0 then 'right now'
     @$el.find('.ArticleDateDuration').text(result)
+
+
+  hideComments: (e) ->
+    @mainBlock = @$(e.currentTarget.offsetParent.offsetParent)
+    @mainBlock.find('.ChildCommentBlock').toggle()
+    @mainBlock.find('.CommentActions').toggle()
 
 class Root extends BaseController
   @path: '(/)'

@@ -1,14 +1,16 @@
-.ui.comment
-  %a.avatar
-    %img.ui.tiny.image.circular{src: image_path(comment.user_avatar) }
-  .content
-    .CommentItem
+- style = comment.rating > -10 ? 'display:block' : 'display:none'
+- button_style = comment.rating <= -10 ? 'display:block' : 'display:none'
+.CommentItem{'data-id' => comment.id}
+  .ui.comment{ style: style}
+    %a.avatar
+      %img.ui.tiny.image.circular{src: image_path(comment.user_avatar) }
+    .content
       %a.author=comment.user_name
       .metadata
         .date.CommentDateDuration 45 min ago
       .mini.ui.icon.button.RatingButtonMinus
         %i.icon.minus
-      %span.CommentRating=comment.rating 
+      %span.CommentRating=comment.rating.to_i 
       .mini.ui.icon.button.RatingButtonPlus
         %i.icon.plus
       .text
@@ -16,3 +18,8 @@
       -if deeps<2
         .actions
           %a.reply.ReplyCommentButton Reply
+          -if deeps == 0 && !comment.children.empty?
+            %a.reply.HideAllCommentButton.CommentActions Hide comments
+            %a.reply.ShowAllCommentButton.CommentActions{style: 'display:none'} Show comments
+
+  %a.reply.ShowComment{ style: button_style} Show comment
