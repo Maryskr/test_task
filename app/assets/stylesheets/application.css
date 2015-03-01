@@ -13,4 +13,6 @@
  *= require_tree .
  *= require_self
  *= require semantic-ui
+//= require alertify/themes/alertify.core
+//= require alertify/themes/alertify.default
  */

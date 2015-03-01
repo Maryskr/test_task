@@ -1,0 +1,14 @@
+.ui.attached.segment
+  %form.ui.form.AjaxForm.Validation.CreateComment{action: '/comment', method: 'POST'}
+    .three.wide.field{'data-field' => 'user_name'}
+      %label Name
+      %input{name: 'comment[user_name]', placeholder: 'Name'}
+    .three.wide.field{'data-field' => 'user_email'}
+      %label Email
+      %input{name: 'comment[user_email]', placeholder: 'Email'}
+    .field{'data-field' => 'content'}
+      %label Your comment
+      %textarea{name: 'comment[content]'}
+      %input{type:'hidden', name: 'comment[article_id]', value: @articleId}
+      %input{type: 'hidden', name: 'comment[parent_id]', value: @parent}
+    %button.ui.submit.button.SubmitButton Submit

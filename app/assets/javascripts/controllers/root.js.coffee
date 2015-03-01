@@ -11,13 +11,12 @@ class ItemView extends Backbone.View
     'click .RatingButtonPlus' : 'incrementRating'
     'click .RatingButtonMinus' : 'decrementRating'
     'click .ReplyCommentButton' : 'showReplyForm'
-    'click .SubmitButton': 'sendForm'
 
   elements:
     ratingInput: '.CommentRating'
     plusButton: '.RatingButtonPlus'
     minusButton: '.RatingButtonMinus'
-    form: '.CreateComment'
+    dateDuration: '.CommentDateDuration'
 
   initialize: (item, collection, el, id, @formView) ->
     @articleId = id
@@ -28,6 +27,18 @@ class ItemView extends Backbone.View
         @[key] = @$el.find(selector)
     @comment.view = @
     @commentsCollection.push(@comment)
+    @setCommentTomeDuration()
+    
+  setCommentTomeDuration: ->
+    now = moment()
+    duration = moment.duration(now.diff(@comment.get('created_at')));
+    result = 
+      switch
+        when duration.days() > 0 then duration.days() + ' days ago'
+        when duration.hours() > 0 then duration.hours() + ' hours ago'
+        when duration.minutes() > 0 then duration.minutes() + ' min ago'
+    console.log result
+    @dateDuration.text(result)
 
   incrementRating: ->
     newRating = @comment.get('rating')+1
@@ -51,8 +62,6 @@ class ItemView extends Backbone.View
   showReplyForm: ->
     @$el.append @formView.render(@getFormData())
 
-  sendForm: ->
-
 class FormView extends Backbone.View
 
   initialize: ->
@@ -62,6 +71,11 @@ class FormView extends Backbone.View
     InitAjaxForm @$el, 'form.AjaxForm'
     @$el.on 'ajax_form:submit', 'form.AjaxForm', (e) =>
       console.log 'on submit'
+     @$el.on 'ajax_form:complete', @onSuccess
+
+  onSuccess:(e) ->
+    alertify.success 'Comment added!'
+    @.remove()
 
   render: (data = {}) ->
     @$el.html @template(data)
