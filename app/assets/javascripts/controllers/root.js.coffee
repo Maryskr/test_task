@@ -27,9 +27,9 @@ class ItemView extends Backbone.View
         @[key] = @$el.find(selector)
     @comment.view = @
     @commentsCollection.push(@comment)
-    @setCommentTomeDuration()
+    @setCommentTimeDuration()
     
-  setCommentTomeDuration: ->
+  setCommentTimeDuration: ->
     now = moment()
     duration = moment.duration(now.diff(@comment.get('created_at')));
     result = 
@@ -37,7 +37,6 @@ class ItemView extends Backbone.View
         when duration.days() > 0 then duration.days() + ' days ago'
         when duration.hours() > 0 then duration.hours() + ' hours ago'
         when duration.minutes() > 0 then duration.minutes() + ' min ago'
-    console.log result
     @dateDuration.text(result)
 
   incrementRating: ->
@@ -87,7 +86,7 @@ class MainView extends Backbone.View
     articleId: '.ArticleIdInput'
     form: '.CreateComment'
 
-  initialize:(collection) ->
+  initialize:(collection, article) ->
     @formView = new FormView
 
     for key, selector of @elements
@@ -98,11 +97,22 @@ class MainView extends Backbone.View
       el = @$el.find('.CommentItem')[index]
       new ItemView(item, @commentsCollection, el, @id, @formView)
     @form.on 'submit', (e) -> e.preventDefault(); false
+    @setArticleTimeDuration(article.created_at)
+
+  setArticleTimeDuration: (articleTime) ->
+    now = moment()
+    duration = moment.duration(now.diff(articleTime));
+    result = 
+      switch
+        when duration.days() > 0 then duration.days() + ' days ago'
+        when duration.hours() > 0 then duration.hours() + ' hours ago'
+        when duration.minutes() > 0 then duration.minutes() + ' min ago'
+    @$el.find('.ArticleDateDuration').text(result)
 
 class Root extends BaseController
   @path: '(/)'
 
   initialize:->
-    new MainView(gon.current_resource)
+    new MainView(gon.current_resource, gon.article)
 
 Route.map Root

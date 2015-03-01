@@ -6,6 +6,7 @@ class MainController < ApplicationController
         @article = Article.first
         @comments = @article.comments
         gon.current_resource = @comments.as_json(methods: :deeps)
+        gon.article = @article
       end
     end
   end

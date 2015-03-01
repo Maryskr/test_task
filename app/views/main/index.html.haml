@@ -4,7 +4,7 @@
       .ui.attached.segment
         %h1.ui.header=@article.title
         .metadata
-          .date 45 min ago
+          .date.ArticleDateDuration 45 min ago
       .ui.attached.segment=@article.content
       %input.ArticleIdInput{type: 'hidden', value: @article.id}
       .ui.attached.segment.CommentsBlock
