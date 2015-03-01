@@ -1,17 +1,18 @@
-%a.avatar
-  %img.ui.tiny.image.circular{src: image_path(comment.user_avatar) }
-.content
-  .CommentItem
-    %a.author=comment.user_name
-    .metadata
-      .date.CommentDateDuration 45 min ago
-    .mini.ui.icon.button.RatingButtonMinus
-      %i.icon.minus
-    %span.CommentRating=comment.rating 
-    .mini.ui.icon.button.RatingButtonPlus
-      %i.icon.plus
-    .text
-      =comment.content
-    -if deeps<2
-      .actions
-        %a.reply.ReplyCommentButton Reply
+.ui.comment
+  %a.avatar
+    %img.ui.tiny.image.circular{src: image_path(comment.user_avatar) }
+  .content
+    .CommentItem
+      %a.author=comment.user_name
+      .metadata
+        .date.CommentDateDuration 45 min ago
+      .mini.ui.icon.button.RatingButtonMinus
+        %i.icon.minus
+      %span.CommentRating=comment.rating 
+      .mini.ui.icon.button.RatingButtonPlus
+        %i.icon.plus
+      .text
+        =comment.content
+      -if deeps<2
+        .actions
+          %a.reply.ReplyCommentButton Reply

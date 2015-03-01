@@ -42,12 +42,12 @@ class ItemView extends Backbone.View
     @dateDuration.text(result)
 
   incrementRating: ->
-    console.log @comment
     newRating = @comment.get('rating')+1
     @ratingInput.text(newRating)
     @comment.set('rating', newRating)
     @plusButton.addClass('disabled')
     @minusButton.addClass('disabled')
+    @updateRating()
 
   decrementRating: ->
     newRating = @comment.get('rating')-1
@@ -55,10 +55,24 @@ class ItemView extends Backbone.View
     @comment.set('rating', newRating)
     @plusButton.addClass('disabled')
     @minusButton.addClass('disabled')
+    @updateRating()
+
+  updateRating: ->
+    $.ajax
+      url: '/comment/' + @comment.get('id')
+      method: 'PUT'
+      dataType: 'json'
+      data:
+        comment:
+          rating: @comment.get('rating')
+      success: (data) =>
+        alertify.success 'Thanks!'
+      error: (errors) =>
+        console.log(errors.responseJSON.errors)
 
   getFormData: ->
     articleId: @articleId
-    deeps: @comment.get('deeps')+1
+    deeps: @comment.get('deeps')
     parent: @comment.get('id')
 
   showReplyForm: ->
@@ -82,21 +96,25 @@ class FormView extends Backbone.View
       user_email: @$el.find('.CommentUserAvatar').val(),
       content: @$el.find('.CommentContent').val(),
       deeps: @$el.find('.CommentDeeps').val(),
-      parent_id: @$el.find('.CommentParentId').val(),
+      parent_id: @$el.find('.CommentParentId').val() || null,
       rating: 0
     }
     id = @$el.find('.ArticleId').val()
     @parent = @collection.get(@newComment.get('parent_id'))
-    console.log @newComment.get('content')
     template = JST.comment(comment: @newComment)
-    elem =  @parent.view.$el
-    el = $(template)
-    elem.after el
+    if @parent
+      elem =  @parent.view.$el
+      @.remove() 
+      el = $(template)
+      elem.after el
+    else
+      elem =  $('.MainContentBlock')
+      el = $(template)
+      elem.append el
+      @$el.find('input, textarea').val('')
 
     subcomment = el.find('.CommentItem')[0]
     new ItemView(@newComment,subcomment, @)
-    console.log subcomment
-    @.remove()
 
   render: (data = {}) ->
     @$el.html @template(data)
@@ -127,6 +145,11 @@ class MainView extends Backbone.View
       new ItemView(item, el, @formView)
     
     @setArticleTimeDuration(article.created_at)
+    @showReplyForm()
+
+
+  showReplyForm: ->
+    @$el.find('.TestTaskPageContent').append @formView.render(articleId: @id, deeps: 0)
 
   setArticleTimeDuration: (articleTime) ->
     now = moment()
