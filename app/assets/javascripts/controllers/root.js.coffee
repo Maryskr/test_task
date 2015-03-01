@@ -18,16 +18,17 @@ class ItemView extends Backbone.View
     minusButton: '.RatingButtonMinus'
     dateDuration: '.CommentDateDuration'
 
-  initialize: (item, collection, el, id, @formView) ->
-    @articleId = id
-    @commentsCollection = collection
-    @comment = new Comment(item)
+  initialize: (comment, el, @formView) ->
+    @comment = comment
+    @articleId = @comment.get('article_id')
     @setElement(el)
     for key, selector of @elements
         @[key] = @$el.find(selector)
     @comment.view = @
-    @commentsCollection.push(@comment)
     @setCommentTimeDuration()
+
+  render: (template) ->
+    @$el.html template
     
   setCommentTimeDuration: ->
     now = moment()
@@ -37,9 +38,11 @@ class ItemView extends Backbone.View
         when duration.days() > 0 then duration.days() + ' days ago'
         when duration.hours() > 0 then duration.hours() + ' hours ago'
         when duration.minutes() > 0 then duration.minutes() + ' min ago'
+        when duration.minutes() == 0 then 'right now'
     @dateDuration.text(result)
 
   incrementRating: ->
+    console.log @comment
     newRating = @comment.get('rating')+1
     @ratingInput.text(newRating)
     @comment.set('rating', newRating)
@@ -63,17 +66,36 @@ class ItemView extends Backbone.View
 
 class FormView extends Backbone.View
 
-  initialize: ->
-    @template = JST.comment
+  initialize: (@collection) ->
+    @template = JST.form
     @setElement $("<div>")
 
     InitAjaxForm @$el, 'form.AjaxForm'
     @$el.on 'ajax_form:submit', 'form.AjaxForm', (e) =>
-      console.log 'on submit'
      @$el.on 'ajax_form:complete', @onSuccess
 
-  onSuccess:(e) ->
+  onSuccess:(e) =>
     alertify.success 'Comment added!'
+    @newComment = new Comment {
+      user_avatar: 'noavatar.png',
+      user_name: @$el.find('.CommentUserName').val(),
+      user_email: @$el.find('.CommentUserAvatar').val(),
+      content: @$el.find('.CommentContent').val(),
+      deeps: @$el.find('.CommentDeeps').val(),
+      parent_id: @$el.find('.CommentParentId').val(),
+      rating: 0
+    }
+    id = @$el.find('.ArticleId').val()
+    @parent = @collection.get(@newComment.get('parent_id'))
+    console.log @newComment.get('content')
+    template = JST.comment(comment: @newComment)
+    elem =  @parent.view.$el
+    el = $(template)
+    elem.after el
+
+    subcomment = el.find('.CommentItem')[0]
+    new ItemView(@newComment,subcomment, @)
+    console.log subcomment
     @.remove()
 
   render: (data = {}) ->
@@ -87,16 +109,23 @@ class MainView extends Backbone.View
     form: '.CreateComment'
 
   initialize:(collection, article) ->
-    @formView = new FormView
 
     for key, selector of @elements
         @[key] = @$el.find(selector)
     @id = @articleId.val()
     @commentsCollection = new Comments
-    _(collection).each (item, index) =>
-      el = @$el.find('.CommentItem')[index]
-      new ItemView(item, @commentsCollection, el, @id, @formView)
-    @form.on 'submit', (e) -> e.preventDefault(); false
+   
+    _(collection).each (item) =>    
+      @comment = new Comment(item)
+      @comment.set('article_id', @id)
+      @commentsCollection.push(@comment)
+
+    @formView = new FormView(@commentsCollection)
+
+    _(@commentsCollection.models).each (item, index) =>
+      el = @$el.find('.CommentItem')[index]  
+      new ItemView(item, el, @formView)
+    
     @setArticleTimeDuration(article.created_at)
 
   setArticleTimeDuration: (articleTime) ->
@@ -107,6 +136,7 @@ class MainView extends Backbone.View
         when duration.days() > 0 then duration.days() + ' days ago'
         when duration.hours() > 0 then duration.hours() + ' hours ago'
         when duration.minutes() > 0 then duration.minutes() + ' min ago'
+        when duration.minutes() == 0 then 'right now'
     @$el.find('.ArticleDateDuration').text(result)
 
 class Root extends BaseController

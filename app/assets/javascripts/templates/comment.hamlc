@@ -1,14 +1,19 @@
-.ui.attached.segment
-  %form.ui.form.AjaxForm.Validation.CreateComment{action: '/comment', method: 'POST'}
-    .three.wide.field{'data-field' => 'user_name'}
-      %label Name
-      %input{name: 'comment[user_name]', placeholder: 'Name'}
-    .three.wide.field{'data-field' => 'user_email'}
-      %label Email
-      %input{name: 'comment[user_email]', placeholder: 'Email'}
-    .field{'data-field' => 'content'}
-      %label Your comment
-      %textarea{name: 'comment[content]'}
-      %input{type:'hidden', name: 'comment[article_id]', value: @articleId}
-      %input{type: 'hidden', name: 'comment[parent_id]', value: @parent}
-    %button.ui.submit.button.SubmitButton Submit
+.ui.comments
+  .ui.comment
+    %a.avatar
+      %img.ui.tiny.image.circular{src: '/assets/' + @comment.get('user_avatar') }
+    .content
+      .CommentItem
+        %a.author=@comment.get('user_name')
+        .metadata
+          .date.CommentDateDuration right now
+        .mini.ui.icon.button.RatingButtonMinus
+          %i.icon.minus
+        %span.CommentRating=@comment.get('rating') 
+        .mini.ui.icon.button.RatingButtonPlus
+          %i.icon.plus
+        .text
+          =@comment.get('content')
+        -if @comment.get('deeps') < 2
+          .actions
+            %a.reply.ReplyCommentButton Reply
