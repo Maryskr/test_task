@@ -43,7 +43,6 @@ class ItemView extends Backbone.View
     @dateDuration.text(result)
 
   incrementRating: ->
-    console.log @comment
     newRating = parseInt(@comment.get('rating'))+1
     @ratingInput.text(newRating)
     @comment.set('rating', parseInt(newRating))
