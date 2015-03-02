@@ -1,18 +1,19 @@
-.ui.comment
-  %a.avatar
-    %img.ui.tiny.image.circular{src: '/assets/' + @comment.get('user_avatar') }
-  .content
-    .CommentItem
-      %a.author=@comment.get('user_name')
-      .metadata
-        .date.CommentDateDuration right now
-      .mini.ui.icon.button.RatingButtonMinus
-        %i.icon.minus
-      %span.CommentRating=@comment.get('rating') 
-      .mini.ui.icon.button.RatingButtonPlus
-        %i.icon.plus
-      .text
-        =@comment.get('content')
-      -if @comment.get('deeps') < 2
-        .actions
-          %a.reply.ReplyCommentButton Reply
+.ui.comments
+  .ui.comment
+    %a.avatar
+      %img.ui.tiny.image.circular{src: '/assets/' + @comment.get('user_avatar') }
+    .content
+      .CommentItem
+        %a.author=@comment.get('user_name')
+        .metadata
+          .date.CommentDateDuration right now
+        .mini.ui.icon.button.RatingButtonMinus
+          %i.icon.minus
+        %span.CommentRating=@comment.get('rating') 
+        .mini.ui.icon.button.RatingButtonPlus
+          %i.icon.plus
+        .text
+          =@comment.get('content')
+        -if @comment.get('deeps') < 2
+          .actions
+            %a.reply.ReplyCommentButton Reply

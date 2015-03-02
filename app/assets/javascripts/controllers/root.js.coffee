@@ -119,13 +119,14 @@ class FormView extends Backbone.View
       el = $(template)
       elem.after el
     else
-      elem =  $('.MainContentBlock')
+      elem =  $('.ParentCommentBlock')
       el = $(template)
       elem.append el
       @$el.find('input, textarea').val('')
 
     subcomment = el.find('.CommentItem')[0]
     new ItemView(@newComment,subcomment, @)
+    $('.TestTaskPageContent').append @.render(articleId: @id, deeps: 0)
 
   render: (data = {}) ->
     @$el.html @template(data)
