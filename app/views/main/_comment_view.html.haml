@@ -15,10 +15,10 @@
         %i.icon.plus
       .text
         =comment.content
-      -if deeps<2
+      -if comment.deeps<2
         .actions
           %a.reply.ReplyCommentButton Reply
-          -if deeps == 0 && !comment.children.empty?
+          -if comment.deeps == 0 && !comment.children.empty?
             %a.reply.HideAllCommentButton.CommentActions Hide comments
             %a.reply.ShowAllCommentButton.CommentActions{style: 'display:none'} Show comments
 

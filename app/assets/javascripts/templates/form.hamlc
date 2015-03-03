@@ -11,5 +11,5 @@
       %textarea.CommentContent{name: 'comment[content]'}
       %input.ArticleId{type:'hidden', name: 'comment[article_id]', value: @articleId}
       %input.CommentParentId{type: 'hidden', name: 'comment[parent_id]', value: @parent}
-      %input.CommentDeeps{type: 'hidden', name: 'deeps', value: @deeps}
+      %input.CommentDeeps{type: 'hidden', name: 'comment[deeps]', value: @deeps}
     %button.ui.submit.button.SubmitButton Submit

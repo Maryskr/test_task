@@ -12,10 +12,10 @@
           - @comments.each do |comment|
             -if comment.parent.nil?
               .ui.comment.ParentCommentBlock
-                = render 'comment_view', comment: comment, deeps: 0
+                = render 'comment_view', comment: comment
                 .ui.comments.ChildCommentBlock
                   - comment.children.each do |subcomment|
-                    = render 'comment_view', comment: subcomment, deeps: 1
+                    = render 'comment_view', comment: subcomment
                     .ui.comments.ChildCommentBlock
                       - subcomment.children.each do |subsubcomment|
-                        = render 'comment_view', comment: subsubcomment, deeps: 2
+                        = render 'comment_view', comment: subsubcomment

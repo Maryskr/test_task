@@ -19,11 +19,14 @@ Article.create(
 Comment.destroy_all
 
 Comment.create([
-  { user_name: 'Lolo', user_email: 'Jonh9@mail.com', content: 'Penguins can be found on every continent in the Southern Hemisphere from the tropical Galapagos Islands (the Galapagos penguin) located near South America to Antarctica (the emperor penguin).', article_id: Article.first.id, rating: -9 },
-  { user_name: 'Pepe', user_email: 'Linda@mail.com', content: 'Penguins can spend up to 75% of their lives in the water. They do all of their hunting in the water. Their prey can be found within 60 feet of the surface, so penguins have no need to swim in deep water. They catch prey in their beaks and swallow them whole as they swim. Some species only leave the water for molting and breeding.', article_id: Article.first.id }
+  { user_name: 'Lolo', 
+    user_email: 'Jonh9@mail.com', 
+    content: 'Penguins can be found on every continent in the Southern Hemisphere from the tropical Galapagos Islands (the Galapagos penguin) located near South America to Antarctica (the emperor penguin).', 
+    article_id: Article.first.id, 
+    rating: -9 },
+  { user_name: 'Pepe', 
+    user_email: 'Linda@mail.com', 
+    content: 'Penguins can spend up to 75% of their lives in the water. They do all of their hunting in the water. Their prey can be found within 60 feet of the surface, so penguins have no need to swim in deep water. They catch prey in their beaks and swallow them whole as they swim. Some species only leave the water for molting and breeding.', 
+    article_id: Article.first.id,
+    parent_id: Comment.first.id }
   ])
-
-Subcomment.destroy_all
-
-Subcomment.create(comment_id: Comment.first.id, child_id: Comment.last.id, deeps: 1)
-Comment.last.update_attributes(parent_id: Comment.first.id)

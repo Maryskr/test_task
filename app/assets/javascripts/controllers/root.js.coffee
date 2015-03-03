@@ -73,7 +73,7 @@ class ItemView extends Backbone.View
 
   getFormData: ->
     articleId: @articleId
-    deeps: @comment.get('deeps')
+    deeps: @comment.get('deeps')+1
     parent: @comment.get('id')
 
   showReplyForm: ->

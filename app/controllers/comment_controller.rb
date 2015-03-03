@@ -2,14 +2,6 @@ class CommentController < ApplicationController
 
   def create
     super
-    if !resource_params[:parent_id].empty?
-      parent = Subcomment.where(comment_id: resource_params[:parent_id])
-      Subcomment.create(
-          comment_id: resource_params[:parent_id],
-          child_id: @new_resource.id,
-          deeps: Comment.find(resource_params[:parent_id]).deeps + 1
-        )
-    end
   end
 
   def update
@@ -25,7 +17,8 @@ private
       :content,
       :article_id,
       :parent_id,
-      :rating
+      :rating,
+      :deeps
     )
   end
 end
