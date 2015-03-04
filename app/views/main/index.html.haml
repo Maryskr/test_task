@@ -13,9 +13,3 @@
             -if comment.parent.nil?
               .ui.comment.ParentCommentBlock
                 = render 'comment_view', comment: comment
-                .ui.comments.ChildCommentBlock
-                  - comment.children.each do |subcomment|
-                    = render 'comment_view', comment: subcomment
-                    .ui.comments.ChildCommentBlock
-                      - subcomment.children.each do |subsubcomment|
-                        = render 'comment_view', comment: subsubcomment

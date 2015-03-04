@@ -23,3 +23,6 @@
             %a.reply.ShowAllCommentButton.CommentActions{style: 'display:none'} Show comments
 
   %a.reply.ShowComment{ style: button_style} Show comment
+.ui.comments.ChildCommentBlock
+  - comment.children.each do |subcomment|
+    = render 'comment_view', comment: subcomment
