@@ -1,5 +1,9 @@
 class Comment extends Backbone.Model
 
+  defaults:
+    user_avatar: 'noavatar.png'
+    rating: 0
+
 class Comments extends Backbone.Collection
   model: Comment
 
@@ -19,17 +23,12 @@ class ItemView extends Backbone.View
     minusButton: '.RatingButtonMinus'
     dateDuration: '.CommentDateDuration'
 
-  initialize: (comment, el, @formView) ->
-    @comment = comment
-    @articleId = @comment.get('article_id')
+  initialize: (@comment, el, @formView) ->
     @setElement(el)
     for key, selector of @elements
         @[key] = @$el.find(selector)
     @comment.view = @
     @setCommentTimeDuration()
-
-  render: (template) ->
-    @$el.html template
     
   setCommentTimeDuration: ->
     now = moment()
@@ -72,7 +71,7 @@ class ItemView extends Backbone.View
         console.log(errors.responseJSON.errors)
 
   getFormData: ->
-    articleId: @articleId
+    articleId: @comment.get('article_id')
     deeps: @comment.get('deeps')+1
     parent: @comment.get('id')
 
@@ -95,36 +94,22 @@ class FormView extends Backbone.View
     @setElement $("<div>")
 
     InitAjaxForm @$el, 'form.AjaxForm'
-    # @$el.on 'ajax_form:submit', 'form.AjaxForm', (e) =>
     @$el.on 'ajax_form:success', @onSuccess
 
-  onSuccess:(e) =>
+  onSuccess:(..., $form) =>
     alertify.success 'Comment added!'
-    @newComment = new Comment {
-      user_avatar: 'noavatar.png',
-      user_name: @$el.find('.CommentUserName').val(),
-      user_email: @$el.find('.CommentUserAvatar').val(),
-      content: @$el.find('.CommentContent').val(),
-      deeps: @$el.find('.CommentDeeps').val(),
-      parent_id: @$el.find('.CommentParentId').val() || null,
-      rating: 0
-    }
-    id = @$el.find('.ArticleId').val()
-    @parent = @collection.get(@newComment.get('parent_id'))
-    template = JST.comment(comment: @newComment)
+    newComment = new Comment $form.serializeJSON().comment
+    @parent = @collection.get(newComment.get('parent_id'))
+    template = JST.comment(comment: newComment)
     if @parent
-      elem =  @parent.view.$el
-      @.remove() 
-      el = $(template)
-      elem.after el
+      @parent.view.$el.after $(template)
+      @.remove()
     else
-      elem =  $('.ParentCommentBlock')
-      el = $(template)
-      elem.append el
+      elem =  $('.ParentCommentBlock').append $(template)
       @$el.find('input, textarea').val('')
 
-    subcomment = el.find('.CommentItem')[0]
-    new ItemView(@newComment,subcomment, @)
+    subcomment = $(template).find('.CommentItem')[0]
+    new ItemView(newComment,subcomment, @)
     $('.TestTaskPageContent').append @.render(articleId: @id, deeps: 0)
 
   render: (data = {}) ->

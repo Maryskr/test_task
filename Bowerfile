@@ -12,3 +12,6 @@ asset 'semantic-ui'
 asset 'pikaday'
 
 asset 'jquery-timepicker-jt'
+
+asset 'backbone-relational'
+asset 'jquery.serializeJSON'

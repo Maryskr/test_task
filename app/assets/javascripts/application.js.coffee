@@ -1,5 +1,6 @@
 #= require jquery
 #= require jquery-ujs
+#= require jquery.serializeJSON
 
 #= require turbolinks
 
