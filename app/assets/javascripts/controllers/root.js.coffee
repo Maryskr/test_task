@@ -1,11 +1,48 @@
-class Comment extends Backbone.Model
+class @Comment extends Backbone.RelationalModel
+  relations: [{
+    type: Backbone.HasMany
+    key: 'children'
+    relatedModel: 'Comment'
+    collectionType: 'Comments'
+    reverseRelation: {
+      key: 'parent'
+      keySource: 'parent_id'
+      includeInJSON: 'id'
+    }
+  }]
 
-class Comments extends Backbone.Collection
+  defaults:
+    user_avatar: 'noavatar.png'
+    rating: 0
+
+class @Comments extends Backbone.Collection
   model: Comment
 
+class SubElementView extends Backbone.View
+
+  elements: {}
+
+  # setElement:
+  #   super
+  #   for key, selector of @elements
+  #       @[key] = @$el.find(selector)
 
 
-class ItemView extends Backbone.View
+class ItemsView extends SubElementView
+
+  elements:
+    list: '.Comments'
+
+  initialize: (@collection, el, @formView) ->
+    @setElement el
+    @listenTo @collection, 'add', @renderItem
+
+  renderItem: (model) ->
+    el = $("<div>")
+    @list.append (new BlockView model, el, @formView).render()
+
+
+class ItemView extends SubElementView
 
   events:
     'click .RatingButtonPlus' : 'incrementRating'
@@ -20,56 +57,53 @@ class ItemView extends Backbone.View
     dateDuration: '.CommentDateDuration'
 
   initialize: (comment, el, @formView) ->
+    @template = JST.comment
     @comment = comment
     @articleId = @comment.get('article_id')
     @setElement(el)
-    for key, selector of @elements
-        @[key] = @$el.find(selector)
     @comment.view = @
-    @setCommentTimeDuration()
-
-  render: (template) ->
-    @$el.html template
+    # @setCommentTimeDuration()
+    @listenTo @comment, 'change', 'render'
     
-  setCommentTimeDuration: ->
-    now = moment()
-    duration = moment.duration(now.diff(@comment.get('created_at')));
-    result = 
-      switch
-        when duration.days() > 0 then duration.days() + ' days ago'
-        when duration.hours() > 0 then duration.hours() + ' hours ago'
-        when duration.minutes() > 0 then duration.minutes() + ' min ago'
-        when duration.minutes() == 0 then 'right now'
-    @dateDuration.text(result)
+  # setCommentTimeDuration: ->
+  #   now = moment()
+  #   duration = moment.duration(now.diff(@comment.get('created_at')));
+  #   result = 
+  #     switch
+  #       when duration.days() > 0 then duration.days() + ' days ago'
+  #       when duration.hours() > 0 then duration.hours() + ' hours ago'
+  #       when duration.minutes() > 0 then duration.minutes() + ' min ago'
+  #       when duration.minutes() == 0 then 'right now'
+  #   @dateDuration.text(result)
 
-  incrementRating: ->
-    newRating = parseInt(@comment.get('rating'))+1
-    @ratingInput.text(newRating)
-    @comment.set('rating', parseInt(newRating))
-    @plusButton.addClass('disabled')
-    @minusButton.addClass('disabled')
-    @updateRating()
+  # incrementRating: ->
+  #   newRating = parseInt(@comment.get('rating'))+1
+  #   @ratingInput.text(newRating)
+  #   @comment.set('rating', parseInt(newRating))
+  #   @plusButton.addClass('disabled')
+  #   @minusButton.addClass('disabled')
+  #   @updateRating()
 
-  decrementRating: ->
-    newRating = parseInt(@comment.get('rating'))-1
-    @ratingInput.text(newRating)
-    @comment.set('rating', parseInt(newRating))
-    @plusButton.addClass('disabled')
-    @minusButton.addClass('disabled')
-    @updateRating()
+  # decrementRating: ->
+  #   newRating = parseInt(@comment.get('rating'))-1
+  #   @ratingInput.text(newRating)
+  #   @comment.set('rating', parseInt(newRating))
+  #   @plusButton.addClass('disabled')
+  #   @minusButton.addClass('disabled')
+  #   @updateRating()
 
-  updateRating: ->
-    $.ajax
-      url: '/comment/' + @comment.get('id')
-      method: 'PUT'
-      dataType: 'json'
-      data:
-        comment:
-          rating: parseInt(@comment.get('rating'))
-      success: (data) =>
-        alertify.success 'Thanks!'
-      error: (errors) =>
-        console.log(errors.responseJSON.errors)
+  # updateRating: ->
+  #   $.ajax
+  #     url: '/comment/' + @comment.get('id')
+  #     method: 'PUT'
+  #     dataType: 'json'
+  #     data:
+  #       comment:
+  #         rating: parseInt(@comment.get('rating'))
+  #     success: (data) =>
+  #       alertify.success 'Thanks!'
+  #     error: (errors) =>
+  #       console.log(errors.responseJSON.errors)
 
   getFormData: ->
     articleId: @articleId
@@ -88,6 +122,22 @@ class ItemView extends Backbone.View
     @$el.find('.comment').toggle()
     @$(e.currentTarget).hide()
 
+
+class BlockView extends SubElementView
+
+  elements:
+    itemElement: '.Comment'
+    itemsElement: '.Comments'
+
+  initialize: (@comment, el, @formView) ->
+    @setElement el
+    @itemView = new ItemView @comment, @itemElement, @formView
+    @itemsView = new ItemsView @comment.get('childrens'), @itemsElement, @formView
+
+  render: ->
+    @$el.html @template
+
+
 class FormView extends Backbone.View
 
   initialize: (@collection) ->
@@ -95,40 +145,16 @@ class FormView extends Backbone.View
     @setElement $("<div>")
 
     InitAjaxForm @$el, 'form.AjaxForm'
-    # @$el.on 'ajax_form:submit', 'form.AjaxForm', (e) =>
     @$el.on 'ajax_form:success', @onSuccess
 
-  onSuccess:(e) =>
+  onSuccess:(..., $form) =>
     alertify.success 'Comment added!'
-    @newComment = new Comment {
-      user_avatar: 'noavatar.png',
-      user_name: @$el.find('.CommentUserName').val(),
-      user_email: @$el.find('.CommentUserAvatar').val(),
-      content: @$el.find('.CommentContent').val(),
-      deeps: @$el.find('.CommentDeeps').val(),
-      parent_id: @$el.find('.CommentParentId').val() || null,
-      rating: 0
-    }
-    id = @$el.find('.ArticleId').val()
-    @parent = @collection.get(@newComment.get('parent_id'))
-    template = JST.comment(comment: @newComment)
-    if @parent
-      elem =  @parent.view.$el
-      @.remove() 
-      el = $(template)
-      elem.after el
-    else
-      elem =  $('.ParentCommentBlock')
-      el = $(template)
-      elem.append el
-      @$el.find('input, textarea').val('')
-
-    subcomment = el.find('.CommentItem')[0]
-    new ItemView(@newComment,subcomment, @)
-    $('.TestTaskPageContent').append @.render(articleId: @id, deeps: 0)
+    newComment = new Comment $form.serializeJSON().comment
+    @collection.add newComment unless newComment.get('parent')
 
   render: (data = {}) ->
     @$el.html @template(data)
+
 
 class MainView extends Backbone.View
   el: '#TestTaskView'
@@ -145,6 +171,7 @@ class MainView extends Backbone.View
         @[key] = @$el.find(selector)
     @id = @articleId.val()
     @commentsCollection = new Comments
+    console.log @commentsCollection
    
     _(collection).each (item) =>    
       @comment = new Comment(item)
@@ -153,7 +180,7 @@ class MainView extends Backbone.View
 
     @formView = new FormView(@commentsCollection)
 
-    _(@commentsCollection.models).each (item, index) =>
+    @commentsCollection.each (item, index) =>
       el = @$el.find('.CommentItem[data-id='+item.get("id")+']')  
       new ItemView(item, el, @formView)
     
@@ -181,10 +208,13 @@ class MainView extends Backbone.View
     @mainBlock.find('.ChildCommentBlock').toggle()
     @mainBlock.find('.CommentActions').toggle()
 
+
 class Root extends BaseController
   @path: '(/)'
 
   initialize:->
     new MainView(gon.current_resource, gon.article)
 
+
+Comment.setup()
 Route.map Root

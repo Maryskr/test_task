@@ -1,5 +1,6 @@
 - style = comment.rating > -10 ? 'display:block' : 'display:none'
 - button_style = comment.rating <= -10 ? 'display:block' : 'display:none'
+
 .CommentItem{'data-id' => comment.id}
   .ui.comment{ style: style}
     %a.avatar
@@ -22,4 +23,8 @@
             %a.reply.HideAllCommentButton.CommentActions Hide comments
             %a.reply.ShowAllCommentButton.CommentActions{style: 'display:none'} Show comments
 
-  %a.reply.ShowComment{ style: button_style} Show comment
+  %a.reply.ShowComment{ style: button_style } Show comment
+
+  .ui.comments.ChildCommentBlock
+    - comment.children.each do |subcomment|
+      = render 'comment_view', comment: subcomment

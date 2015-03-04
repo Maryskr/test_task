@@ -1,10 +1,12 @@
 #= require jquery
+#= require jquery.serializeJSON
 #= require jquery-ujs
 
 #= require turbolinks
 
 #= require underscore/underscore
 #= require backbone
+#= require backbone-relational
 #= require moment
 
 #= require alertify
